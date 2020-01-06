@@ -1,6 +1,19 @@
-require "forget_that/version"
+# frozen_string_literal: true
+
+require 'forget_that/version'
+require 'forget_that/service'
+require 'forget_that/record'
 
 module ForgetThat
-  class Error < StandardError; end
-  # Your code goes here...
+  class InvalidConfigError < StandardError; end
+
+  class << self
+    attr_writer :logger
+
+    def logger
+      @logger ||= Logger.new($stdout).tap do |log|
+        log.progname = self.name
+      end
+    end
+  end
 end

@@ -1,0 +1,17 @@
+config:
+  retention_time:
+    value: 90
+    unit: 'days'
+
+schema:
+  addresses:
+    city: 'Kyteż'
+    zip_code: '99999'
+    street: 'Sesame Street'
+    street_number: '123'
+    lived_since: '%{random_date}'
+
+  bank_accounts:
+    bic: '123456789'
+    iban: '123456789'
+    bank_name: 'ACME INC.'

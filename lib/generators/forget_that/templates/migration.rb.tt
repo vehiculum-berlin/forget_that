@@ -1,0 +1,7 @@
+class <%= migration_class_name %> < ActiveRecord::Migration<%= migration_version %>
+  def change
+  <% used_tables.each do |table| -%>
+    add_column :<%= table %>, :anonymized, :boolean, default: false
+  <% end -%>
+  end
+end
