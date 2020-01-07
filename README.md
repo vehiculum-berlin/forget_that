@@ -60,7 +60,7 @@ If some of the placeholders are not supplied, or some tables do not contain `ano
 
 ### Sidekiq
 
-The case gem is used originally is data anonymization with accordance to data protection regulations in EU according to which some sensitive user data must not be stored longer than 90 days.
+The case gem is used originally is data anonymization with accordance to data protection regulations in EU. Reducing the amount of sensitive information, after transactions are complete is the safest bet when it comes to data security.
 
 This can be achieved through setting up a `sidekiq` worker:
 
