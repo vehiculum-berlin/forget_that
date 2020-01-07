@@ -1,6 +1,10 @@
 # ForgetThat
 
-ForgetThat is a tool replace critical old user data in your rails application.
+ForgetThat is a tool to take care of critical data in your database. It replaces the critical pieces of data with anonymized data, according to pre-set per-application policy.
+
+## Important notice
+
+When misconfigured and/or misused this gem can effectively wipe important data from the database. Be responsible and test before running on production data.
 
 ## Installation
 
@@ -13,10 +17,6 @@ gem 'forget_that'
 And then execute:
 
     $ bundle
-
-Or install it yourself as:
-
-    $ gem install forget_that
 
 ## Configuration
 
@@ -35,17 +35,17 @@ schema:
     phone: '%{random_phone}'
 ```
 
-Pay attention that default placeholders are `random_date`, `hex_string`, `random_phone`, `fake_personal_id_number`, `random_amount`. You can add your own placeholders by supplying them to initializer (see below)
+Pay attention that default placeholders are `random_date`, `hex_string`, `random_phone`, `fake_personal_id_number`, `random_amount`. You can add your own placeholders by supplying them to initializer ([see below](#custom_placeholders))
 
 ## Database migration
 
 After you created a config you can generate migration that adds anonymization metadata to corresponding tables:
 
-  $ rails g forget_that:install
+    $ rails g forget_that:install
 
 Do not forget to run the migration:
 
-  $ rails db:migrate
+    $ rails db:migrate
 
 ## Usage
 
@@ -60,7 +60,9 @@ If some of the placeholders are not supplied, or some tables do not contain `ano
 
 ### Sidekiq
 
-Typical use for the service might be a scheduled Sidekiq worker:
+The case gem is used originally is data anonymization with accordance to data protection regulations in EU according to which some sensitive user data must not be stored longer than 90 days.
+
+This can be achieved through setting up a `sidekiq` worker:
 
 ```ruby
 class AnonymizeCustomerData
@@ -78,6 +80,26 @@ class AnonymizeCustomerData
 end
 ```
 
+Then you can use tool like `sidekiq-cron` in order to schedule it.
+
+### Rake-task for using production data locally
+
+Another use might be when a developer dumps a production database in order to play with it locally.
+
+To be on the safe side and to not compromise sensitive data, the gem might be configured in the following way:
+
+```YAML
+config:
+  retention_time:
+    value: 0
+    unit: 'seconds'
+
+schema:
+  # your anonymization schema
+```
+
+Then gem can be invoked from the rake-task. It is your responsibility to ensure that it never runs on production.
+
 ### Custom placeholders
 
 The default placeholders are `random_date`, `hex_string`, `random_phone`, `fake_personal_id_number`, `random_amount`. In some cases this might not be enough or behaviour might not be desireable. In that case you can supply `anonymizers` hash.
@@ -85,14 +107,24 @@ The default placeholders are `random_date`, `hex_string`, `random_phone`, `fake_
 ```ruby
 ForgetThat::Service.new(
   anonymizers: {
-    foobar: -> { 'foo' + 'bar' }
+    foobar: -> { 'Foo' + 'Bar' }
   }
 ).call
 ```
 
 Each member of this hash must be a zero-arity lambda that returns a string value.
 
+If the key in the hash matches one of the pre-defined placeholders, the pre-defined placeholder will be overridden by the new one.
+
 After anonymizer was supplied with the lambda, it can be used in the config.
+
+```YAML
+# ...
+
+schema:
+  users:
+    name: 'Peter %{foobar}' #results in the "name" column of table "users" filled with "Peter FooBar"
+```
 
 ## Development
 
