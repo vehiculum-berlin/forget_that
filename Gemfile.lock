@@ -2,10 +2,10 @@ PATH
   remote: .
   specs:
     forget_that (0.1.0)
-      activerecord
+      activerecord (>= 5)
       activesupport
       pg
-      railties
+      railties (>= 5)
 
 GEM
   remote: https://rubygems.org/
