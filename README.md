@@ -1,8 +1,6 @@
 # ForgetThat
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/forget_that`. To experiment with that code, run `bin/console` for an interactive prompt.
-
-TODO: Delete this and the text above, and describe your gem
+ForgetThat is a tool replace critical old user data in your rails application.
 
 ## Installation
 
@@ -20,9 +18,81 @@ Or install it yourself as:
 
     $ gem install forget_that
 
+## Configuration
+
+Before gem could be used, a config in `config/anonymization_config.yml` in must be created:
+
+```YAML
+config:
+  retention_time:
+    value: 90
+    unit: 'days'
+
+schema:
+  table1:
+    name: 'Peter'
+  table2:
+    phone: '%{random_phone}'
+```
+
+Pay attention that default placeholders are `random_date`, `hex_string`, `random_phone`, `fake_personal_id_number`, `random_amount`. You can add your own placeholders by supplying them to initializer (see below)
+
+## Database migration
+
+After you created a config you can generate migration that adds anonymization metadata to corresponding tables:
+
+  $ rails g forget_that:install
+
+Do not forget to run the migration:
+
+  $ rails db:migrate
+
 ## Usage
 
-TODO: Write usage instructions here
+In order to run the service, you can create an instance and use the `call` method:
+
+```ruby
+ForgetThat::Service.new.call
+```
+
+Calling that will find records older then `retention_time` in your configured tables and replace the configured fields with configured values.
+If some of the placeholders are not supplied, or some tables do not contain `anonymization` flag the error will be raised.
+
+### Sidekiq
+
+Typical use for the service might be a scheduled Sidekiq worker:
+
+```ruby
+class AnonymizeCustomerData
+  include Sidekiq::Worker
+
+  sidekiq_options retry: 10
+
+  def perform
+    Rails.logger.info('[AnonymizeCustomerData.perform] start')
+
+    ForgetThat::Service.new.call
+
+    Rails.logger.info('[AnonymizeCustomerData.perform] done')
+  end
+end
+```
+
+### Custom placeholders
+
+The default placeholders are `random_date`, `hex_string`, `random_phone`, `fake_personal_id_number`, `random_amount`. In some cases this might not be enough or behaviour might not be desireable. In that case you can supply `anonymizers` hash.
+
+```ruby
+ForgetThat::Service.new(
+  anonymizers: {
+    foobar: -> { 'foo' + 'bar' }
+  }
+).call
+```
+
+Each member of this hash must be a zero-arity lambda that returns a string value.
+
+After anonymizer was supplied with the lambda, it can be used in the config.
 
 ## Development
 
@@ -32,4 +102,4 @@ To install this gem onto your local machine, run `bundle exec rake install`. To 
 
 ## Contributing
 
-Bug reports and pull requests are welcome on GitHub at https://github.com/[USERNAME]/forget_that.
+Bug reports and pull requests are welcome on GitHub at https://github.com/vehiculum-berlin/forget_that.
