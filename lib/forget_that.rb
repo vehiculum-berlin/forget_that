@@ -6,6 +6,7 @@ require 'forget_that/record'
 
 module ForgetThat
   class InvalidConfigError < StandardError; end
+  class InvalidCollectionError < StandardError; end
 
   class << self
     attr_writer :logger

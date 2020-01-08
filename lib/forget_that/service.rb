@@ -20,6 +20,29 @@ module ForgetThat
       end
     end
 
+    def sanitize_collection(collection)
+      raise InvalidConfigError unless valid_anonymizer_set?
+      raise InvalidCollectionError unless valid_records? collection
+
+      table = collection.klass.table_name
+      unsafe_columns = config[table].keys
+      safe_columns = (collection.klass.columns.map(&:name) - unsafe_columns).reject { |e| e == 'id' }
+      safe_data = collection.pluck(*safe_columns).map { |r| r.is_a?(Array) ? r : [r] }
+      safe_data.map do |record|
+        makeshift = {}
+        unsafe_columns.each do |column|
+          makeshift[column] = config[table][column]
+        end
+        makeshift = makeshift
+                    .map { |key, value| [key, value.to_s % generate_anonymized_values] }
+                    .to_h
+        safe_columns
+          .map.with_index { |value, index| [value, record[index]] }
+          .to_h
+          .merge(makeshift)
+      end
+    end
+
     def anonymizers
       {
         random_date: -> { Time.now - [*1..10**4].sample.days },
@@ -61,6 +84,12 @@ module ForgetThat
         ForgetThat.logger.error('Some of the tables in your database do not contain `anonymized` flag')
         false
       end
+    end
+
+    def valid_records?(collection)
+      return true if collection.is_a?(ActiveRecord::Relation)
+
+      false
     end
 
     private

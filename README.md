@@ -23,8 +23,8 @@ And then execute:
 Before gem could be used, a config in `config/anonymization_config.yml` in must be created:
 
 ```YAML
-config:
-  retention_time:
+config: # config part is only valid for the `call` method which will write in db
+  retention_time: # defines the newest record to be anonymized when `call` is used
     value: 90
     unit: 'days'
 
@@ -100,6 +100,20 @@ schema:
 
 Then gem can be invoked from the rake-task. It is your responsibility to ensure that it never runs on production.
 
+### Non-destructive use
+
+Anonymizers might be used with collection `ActiveRecord::Relation` supplied, not affecting any database.
+
+For example:
+
+```ruby
+anonymizer = ForgetThat::Service.new
+collection = Address.where(created_at: Time.current - 40.days)
+anonymizer.sanitize_collection(collection)
+```
+
+This will return an array of Hashes, corresponding to the records in `collection`. All fields configured to be anonymized, will be anonymized, ids will be stripped, the rest will be provided as is. This method ignores `retention_time`.
+
 ### Custom placeholders
 
 The default placeholders are `random_date`, `hex_string`, `random_phone`, `fake_personal_id_number`, `random_amount`. In some cases this might not be enough or behaviour might not be desireable. In that case you can supply `anonymizers` hash.
@@ -125,6 +139,7 @@ schema:
   users:
     name: 'Peter %{foobar}' #results in the "name" column of table "users" filled with "Peter FooBar"
 ```
+
 
 ## Development
 
