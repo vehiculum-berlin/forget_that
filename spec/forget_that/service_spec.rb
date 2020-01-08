@@ -24,24 +24,24 @@ RSpec.describe ForgetThat::Service do
         ActiveRecord::Schema.define do
           self.verbose = false
 
-          create_table "addresses", force: :cascade do |t|
-            t.string "city"
-            t.string "zip_code"
-            t.string "street"
-            t.string "street_number"
-            t.date "lived_since"
-            t.datetime "created_at", null: false
-            t.datetime "updated_at", null: false
-            t.boolean "anonymized", default: false
+          create_table 'addresses', force: :cascade do |t|
+            t.string 'city'
+            t.string 'zip_code'
+            t.string 'street'
+            t.string 'street_number'
+            t.date 'lived_since'
+            t.datetime 'created_at', null: false
+            t.datetime 'updated_at', null: false
+            t.boolean 'anonymized', default: false
           end
 
-          create_table "bank_accounts", force: :cascade do |t|
-            t.string "bic"
-            t.string "iban"
-            t.string "bank_name"
-            t.datetime "created_at", null: false
-            t.datetime "updated_at", null: false
-            t.boolean "anonymized", default: false
+          create_table 'bank_accounts', force: :cascade do |t|
+            t.string 'bic'
+            t.string 'iban'
+            t.string 'bank_name'
+            t.datetime 'created_at', null: false
+            t.datetime 'updated_at', null: false
+            t.boolean 'anonymized', default: false
           end
         end
         expect(ForgetThat::Service.new.valid_config?).to eq(true)
@@ -64,24 +64,24 @@ RSpec.describe ForgetThat::Service do
         ActiveRecord::Schema.define do
           self.verbose = false
 
-          create_table "addresses", force: :cascade do |t|
-            t.string "city"
-            t.string "zip_code"
-            t.string "street"
-            t.string "street_number"
-            t.date "lived_since"
-            t.datetime "created_at", null: false
-            t.datetime "updated_at", null: false
-            t.boolean "anonymized", default: false
+          create_table 'addresses', force: :cascade do |t|
+            t.string 'city'
+            t.string 'zip_code'
+            t.string 'street'
+            t.string 'street_number'
+            t.date 'lived_since'
+            t.datetime 'created_at', null: false
+            t.datetime 'updated_at', null: false
+            t.boolean 'anonymized', default: false
           end
 
-          create_table "bank_accounts", force: :cascade do |t|
-            t.string "bic"
-            t.string "iban"
-            t.string "bank_name"
-            t.datetime "created_at", null: false
-            t.datetime "updated_at", null: false
-            t.boolean "anonymized", default: false
+          create_table 'bank_accounts', force: :cascade do |t|
+            t.string 'bic'
+            t.string 'iban'
+            t.string 'bank_name'
+            t.datetime 'created_at', null: false
+            t.datetime 'updated_at', null: false
+            t.boolean 'anonymized', default: false
           end
         end
         expect(ForgetThat::Service.new.valid_database_schema?).to eq(true)
@@ -94,23 +94,23 @@ RSpec.describe ForgetThat::Service do
         ActiveRecord::Schema.define do
           self.verbose = false
 
-          create_table "addresses", force: :cascade do |t|
-            t.string "city"
-            t.string "zip_code"
-            t.string "street"
-            t.string "street_number"
-            t.date "lived_since"
-            t.datetime "created_at", null: false
-            t.datetime "updated_at", null: false
-            t.boolean "anonymized", default: false
+          create_table 'addresses', force: :cascade do |t|
+            t.string 'city'
+            t.string 'zip_code'
+            t.string 'street'
+            t.string 'street_number'
+            t.date 'lived_since'
+            t.datetime 'created_at', null: false
+            t.datetime 'updated_at', null: false
+            t.boolean 'anonymized', default: false
           end
 
-          create_table "bank_accounts", force: :cascade do |t|
-            t.string "bic"
-            t.string "iban"
-            t.string "bank_name"
-            t.datetime "created_at", null: false
-            t.datetime "updated_at", null: false
+          create_table 'bank_accounts', force: :cascade do |t|
+            t.string 'bic'
+            t.string 'iban'
+            t.string 'bank_name'
+            t.datetime 'created_at', null: false
+            t.datetime 'updated_at', null: false
           end
         end
         expect(ForgetThat::Service.new.valid_database_schema?).to eq(false)
