@@ -74,10 +74,10 @@ Documentation:
 Layout/MultilineHashBraceLayout:
   EnforcedStyle: symmetrical
 
-Layout/AlignHash:
+Layout/HashAlignment:
   Enabled: false
 
-Layout/AlignParameters:
+Layout/ParameterAlignment:
   Enabled: false
 
 Metrics/BlockLength:
