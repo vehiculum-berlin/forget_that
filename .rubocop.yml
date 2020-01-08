@@ -1,10 +1,12 @@
 Style/Documentation:
   Enabled: false
+
 Style/MixinUsage:
   Exclude:
     - 'bin/setup'
     - 'bin/update'
-Metrics/LineLength:
+
+Layout/LineLength:
   Max: 120
   IgnoredPatterns: ['(\A|\s)#']
 
@@ -74,10 +76,10 @@ Documentation:
 Layout/MultilineHashBraceLayout:
   EnforcedStyle: symmetrical
 
-Layout/AlignHash:
+Layout/HashAlignment:
   Enabled: false
 
-Layout/AlignParameters:
+Layout/ParameterAlignment:
   Enabled: false
 
 Metrics/BlockLength:
@@ -103,7 +105,7 @@ Lint/AmbiguousOperator:
 
 AllCops:
   DisplayCopNames: true
-  TargetRubyVersion: 2.5.0
+  TargetRubyVersion: 2.7.0
   CacheRootDirectory: tmp/test-results
   Exclude:
     - db/**/*
