@@ -14,11 +14,11 @@ Gem::Specification.new do |spec|
   spec.description   = 'Easily setup and run anonymization policies'
   spec.homepage      = 'https://github.com/vehiculum-berlin'
 
-  spec.metadata['allowed_push_host'] = 'rubygems.org'
+  spec.metadata['allowed_push_host'] = 'https://rubygems.org'
 
   spec.metadata['homepage_uri'] = spec.homepage
   spec.metadata['source_code_uri'] = 'https://github.com/vehiculum-berlin/forget_that'
-  spec.metadata["changelog_uri"] = 'https://github.com/vehiculum-berlin/forget_that'
+  spec.metadata['changelog_uri'] = 'https://github.com/vehiculum-berlin/forget_that'
 
   # Specify which files should be added to the gem when it is released.
   # The `git ls-files -z` loads the files in the RubyGem that have been added into git.
