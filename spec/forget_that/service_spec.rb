@@ -1,6 +1,38 @@
 # frozen_string_literal: true
 
+require_relative './helpers/schema_helper.rb'
+
 RSpec.describe ForgetThat::Service do
+  include SchemaHelper
+
+  TABLE_DATA_FAIL = {
+    data: {
+      bank_accounts: {
+        bic: { type: 'string', name: 'bic' },
+        iban: { type: 'string', name: 'iban' },
+        bank_name: { type: 'string', name: 'bank_name' },
+        created_at: { type: 'datetime', name: 'created_at' },
+        updated_at: { type: 'datetime', name: 'updated_at' }
+      },
+      addresses: {
+        city: { type: 'string', name: 'city' },
+        zip_code: { type: 'string', name: 'zip_code' },
+        street: { type: 'string', name: 'street' },
+        street_number: { type: 'string', name: 'street_number' },
+        lived_since: { type: 'date', name: 'lived_since' },
+        created_at: { type: 'datetime', name: 'created_at' },
+        updated_at: { type: 'datetime', name: 'updated_at' },
+        anonimyzed: { type: 'boolean', name: 'anonymized' }
+      }
+    }
+  }.freeze
+  TABLE_DATA_SUCCESS = TABLE_DATA_FAIL.deep_dup
+  TABLE_DATA_SUCCESS[:data][:bank_accounts][:anonymized] = { type: 'boolean', name: 'anonymized' }
+
+  before do
+    SchemaHelper.define_schema(TABLE_DATA_SUCCESS)
+  end
+
   describe 'initialize' do
     context 'succsessfull initialization' do
       it do
@@ -20,30 +52,6 @@ RSpec.describe ForgetThat::Service do
   describe 'valid_config?' do
     context 'config is valid' do
       it do
-        ActiveRecord::Base.establish_connection(adapter: 'postgresql')
-        ActiveRecord::Schema.define do
-          self.verbose = false
-
-          create_table 'addresses', force: :cascade do |t|
-            t.string 'city'
-            t.string 'zip_code'
-            t.string 'street'
-            t.string 'street_number'
-            t.date 'lived_since'
-            t.datetime 'created_at', null: false
-            t.datetime 'updated_at', null: false
-            t.boolean 'anonymized', default: false
-          end
-
-          create_table 'bank_accounts', force: :cascade do |t|
-            t.string 'bic'
-            t.string 'iban'
-            t.string 'bank_name'
-            t.datetime 'created_at', null: false
-            t.datetime 'updated_at', null: false
-            t.boolean 'anonymized', default: false
-          end
-        end
         expect(ForgetThat::Service.new.valid_config?).to eq(true)
       end
     end
@@ -58,61 +66,15 @@ RSpec.describe ForgetThat::Service do
   end
 
   describe 'valid_database_schema?' do
-    context 'tables contain necessary columns' do
-      it do
-        ActiveRecord::Base.establish_connection(adapter: 'postgresql')
-        ActiveRecord::Schema.define do
-          self.verbose = false
-
-          create_table 'addresses', force: :cascade do |t|
-            t.string 'city'
-            t.string 'zip_code'
-            t.string 'street'
-            t.string 'street_number'
-            t.date 'lived_since'
-            t.datetime 'created_at', null: false
-            t.datetime 'updated_at', null: false
-            t.boolean 'anonymized', default: false
-          end
-
-          create_table 'bank_accounts', force: :cascade do |t|
-            t.string 'bic'
-            t.string 'iban'
-            t.string 'bank_name'
-            t.datetime 'created_at', null: false
-            t.datetime 'updated_at', null: false
-            t.boolean 'anonymized', default: false
-          end
-        end
+    context 'when valid' do
+      it 'tables contain necessary columns' do
         expect(ForgetThat::Service.new.valid_database_schema?).to eq(true)
       end
     end
 
-    context 'some tables do not contain necessary columns' do
-      it do
-        ActiveRecord::Base.establish_connection(adapter: 'postgresql')
-        ActiveRecord::Schema.define do
-          self.verbose = false
-
-          create_table 'addresses', force: :cascade do |t|
-            t.string 'city'
-            t.string 'zip_code'
-            t.string 'street'
-            t.string 'street_number'
-            t.date 'lived_since'
-            t.datetime 'created_at', null: false
-            t.datetime 'updated_at', null: false
-            t.boolean 'anonymized', default: false
-          end
-
-          create_table 'bank_accounts', force: :cascade do |t|
-            t.string 'bic'
-            t.string 'iban'
-            t.string 'bank_name'
-            t.datetime 'created_at', null: false
-            t.datetime 'updated_at', null: false
-          end
-        end
+    context 'when not valid' do
+      it 'some tables do not contain necessary columns' do
+        SchemaHelper.define_schema(TABLE_DATA_FAIL)
         expect(ForgetThat::Service.new.valid_database_schema?).to eq(false)
       end
     end
@@ -120,21 +82,20 @@ RSpec.describe ForgetThat::Service do
 
   describe 'sanitize_collection' do
     it 'returns anonymized collection' do
-      ActiveRecord::Base.establish_connection adapter: 'sqlite3', database: ':memory:'
+      table_data = {
+        data: {
+          addresses: {
+            city: { type: 'string', name: 'city' },
+            zip_code: { type: 'string', name: 'zip_code' },
+            street: { type: 'string', name: 'street' },
+            street_number: { type: 'string', name: 'street_number' },
+            lived_since: { type: 'string', name: 'lived_since' },
+            foo: { type: 'string', name: 'foo' }
+          }
+        }
+      }
 
-      ActiveRecord::Schema.define do
-        self.verbose = false
-
-        create_table 'addresses', force: :cascade do |t|
-          t.string 'city'
-          t.string 'zip_code'
-          t.string 'street'
-          t.string 'street_number'
-          t.date 'lived_since'
-          t.string 'foo'
-        end
-      end
-
+      SchemaHelper.define_schema(table_data)
       Address = Class.new(ActiveRecord::Base) { self.table_name = 'addresses' }
 
       Address.create(
