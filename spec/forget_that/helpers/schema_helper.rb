@@ -12,7 +12,12 @@ module SchemaHelper
       data.each do |table_name, columns|
         create_table table_name.to_s, force: :cascade do |t|
           columns.each do |_key, attrs|
-            t.public_send(attrs[:type], attrs[:name])
+            case attrs[:constraints]
+            when attrs[:constraints].blank?
+              t.public_send(attrs[:type], attrs[:name])
+            else
+              t.public_send(attrs[:type], attrs[:name], attrs[:constraints].symbolize_keys)
+            end
           end
         end
       end
