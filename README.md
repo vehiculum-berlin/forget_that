@@ -12,7 +12,6 @@ When misconfigured and/or misused this gem can effectively wipe important data f
 
 - Ruby ~> 2.6.0
 - ActiveRecord ~> 5
-- Running Postgresql installation
 
 ## Installation
 
