@@ -1,0 +1,80 @@
+version: 2
+jobs:
+  build_1:
+    docker:
+      - image: circleci/ruby:2.6.0
+        environment:
+          BUNDLE_JOBS: 3
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
+          PGHOST: 127.0.0.1
+          PGUSER: pg
+      - image: circleci/postgres:9.5-alpine # database image
+        environment: # environment variables for database
+          POSTGRES_USER: pg
+          POSTGRES_DB: pg
+          POSTGRES_PASSWORD: ""
+    steps:
+      - checkout
+      - run:
+          name: Install Bundler gem
+          command: gem install bundler
+      - run:
+          name: Bundle install
+          command: bundle install
+      - run:
+          name: Run rspec in parallel
+          command: |
+            bundle exec rspec --profile 10 \
+                              --format RspecJunitFormatter \
+                              --out test_results/rspec.xml \
+                              --format progress \
+                              $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
+          # Save test results for timing analysis
+      - store_test_results: # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+          path: test_results
+
+  build_2:
+    docker:
+      - image: circleci/ruby:2.7.0
+        environment:
+          BUNDLE_JOBS: 3
+          BUNDLE_RETRY: 3
+          BUNDLE_PATH: vendor/bundle
+          PGHOST: 127.0.0.1
+          PGUSER: pg
+      - image: circleci/postgres:9.5-alpine # database image
+        environment: # environment variables for database
+          POSTGRES_USER: pg
+          POSTGRES_DB: pg
+          POSTGRES_PASSWORD: ""
+    steps:
+      - checkout
+      - run:
+          name: Install Bundler gem
+          command: gem install bundler
+      - run:
+          name: Bundle install
+          command: bundle install
+      - run:
+          name: Run rspec in parallel
+          command: |
+            bundle exec rspec --profile 10 \
+                              --format RspecJunitFormatter \
+                              --out test_results/rspec.xml \
+                              --format progress \
+                              $(circleci tests glob "spec/**/*_spec.rb" | circleci tests split --split-by=timings)
+          # Save test results for timing analysis
+      - store_test_results: # Upload test results for display in Test Summary: https://circleci.com/docs/2.0/collect-test-data/
+          path: test_results
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build_1
+      - build_2
+      - build_3
+      - build_4
+      - build_5
+
