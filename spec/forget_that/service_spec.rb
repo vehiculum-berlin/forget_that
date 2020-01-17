@@ -8,26 +8,28 @@ RSpec.describe ForgetThat::Service do
   TABLE_DATA_FAIL = {
     data: {
       bank_accounts: {
-        bic: { type: 'string', name: 'bic' },
-        iban: { type: 'string', name: 'iban' },
-        bank_name: { type: 'string', name: 'bank_name' },
-        created_at: { type: 'datetime', name: 'created_at' },
-        updated_at: { type: 'datetime', name: 'updated_at' }
+        bic: { type: 'string', name: 'bic', constraints: {} },
+        iban: { type: 'string', name: 'iban', constraints: {} },
+        bank_name: { type: 'string', name: 'bank_name', constraints: {} },
+        created_at: { type: 'datetime', name: 'created_at', constraints: {} },
+        updated_at: { type: 'datetime', name: 'updated_at', constraints: {} }
       },
       addresses: {
-        city: { type: 'string', name: 'city' },
-        zip_code: { type: 'string', name: 'zip_code' },
-        street: { type: 'string', name: 'street' },
-        street_number: { type: 'string', name: 'street_number' },
-        lived_since: { type: 'date', name: 'lived_since' },
-        created_at: { type: 'datetime', name: 'created_at' },
-        updated_at: { type: 'datetime', name: 'updated_at' },
-        anonimyzed: { type: 'boolean', name: 'anonymized' }
+        city: { type: 'string', name: 'city', constraints: {} },
+        zip_code: { type: 'string', name: 'zip_code', constraints: {} },
+        street: { type: 'string', name: 'street', constraints: {} },
+        street_number: { type: 'string', name: 'street_number', constraints: {} },
+        lived_since: { type: 'date', name: 'lived_since', constraints: {} },
+        created_at: { type: 'datetime', name: 'created_at', constraints: {} },
+        updated_at: { type: 'datetime', name: 'updated_at', constraints: {} },
+        anonimyzed: { type: 'boolean', name: 'anonymized', constraints: {} }
       }
     }
   }.freeze
   TABLE_DATA_SUCCESS = TABLE_DATA_FAIL.deep_dup
-  TABLE_DATA_SUCCESS[:data][:bank_accounts][:anonymized] = { type: 'boolean', name: 'anonymized' }
+  TABLE_DATA_SUCCESS[:data][:bank_accounts][:anonymized] = {
+    type: 'boolean', name: 'anonymized', constraints: {}
+  }
 
   before do
     SchemaHelper.define_schema(TABLE_DATA_SUCCESS)
@@ -85,12 +87,12 @@ RSpec.describe ForgetThat::Service do
       table_data = {
         data: {
           addresses: {
-            city: { type: 'string', name: 'city' },
-            zip_code: { type: 'string', name: 'zip_code' },
-            street: { type: 'string', name: 'street' },
-            street_number: { type: 'string', name: 'street_number' },
-            lived_since: { type: 'string', name: 'lived_since' },
-            foo: { type: 'string', name: 'foo' }
+            city: { type: 'string', name: 'city', constraints: {} },
+            zip_code: { type: 'string', name: 'zip_code', constraints: {} },
+            street: { type: 'string', name: 'street', constraints: {} },
+            street_number: { type: 'string', name: 'street_number', constraints: {} },
+            lived_since: { type: 'string', name: 'lived_since', constraints: {} },
+            foo: { type: 'string', name: 'foo', constraints: {} }
           }
         }
       }
