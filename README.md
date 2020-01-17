@@ -1,6 +1,6 @@
 # ForgetThat
 
-[![VEHICULUM](https://circleci.com/gh/vehiculum-berlin/forget_that.svg?style=svg)](https://circleci.com/gh/vehiculum-berlin/forget_that)
+[![VEHICULUM](https://img.shields.io/circleci/build/github/vehiculum-berlin/forget_that/master?style=for-the-badge)](https://circleci.com/gh/vehiculum-berlin/forget_that)
 
 ForgetThat is a tool to take care of critical data in your database. It replaces the critical pieces of data with anonymized data, according to pre-set per-application policy.
 
