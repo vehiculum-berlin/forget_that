@@ -1,5 +1,7 @@
 # ForgetThat
 
+[![VEHICULUM](https://circleci.com/gh/vehiculum-berlin/forget_that.svg?style=svg)](https://circleci.com/gh/vehiculum-berlin/forget_that)
+
 ForgetThat is a tool to take care of critical data in your database. It replaces the critical pieces of data with anonymized data, according to pre-set per-application policy.
 
 ## Important notice
@@ -7,6 +9,7 @@ ForgetThat is a tool to take care of critical data in your database. It replaces
 When misconfigured and/or misused this gem can effectively wipe important data from the database. Be responsible and test before running on production data.
 
 ## Prerequisites
+
 - Ruby ~> 2.6.0
 - ActiveRecord ~> 5
 - Running Postgresql installation
